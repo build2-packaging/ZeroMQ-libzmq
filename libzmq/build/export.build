@@ -1,6 +1,6 @@
 $out_root/
 {
-  include src/libzmq/
+  include src/
 }
 
-export $out_root/src/libzmq/$import.target
+export $out_root/src/$import.target

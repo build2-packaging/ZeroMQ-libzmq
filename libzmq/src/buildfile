@@ -1,0 +1,47 @@
+intf_libs = # Interface dependencies.
+impl_libs = # Implementation dependencies.
+
+# Public headers.
+pub = [dir_path] ../../include/libzmq/
+
+include $pub
+
+pub_hdrs = $($pub/ pub_hdrs)
+
+lib{zmq}: $pub/{$pub_hdrs}
+
+# Private headers and sources as well as dependencies.
+lib{zmq}: {hxx cxx}{* -ws_*} $impl_libs $intf_libs
+lib{zmq}: {hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
+
+# Build options.
+out_pfx_inc = [dir_path] $out_root/include/
+src_pfx_inc = [dir_path] $src_root/include/
+out_pfx_src = [dir_path] $out_root/src/
+src_pfx_src = [dir_path] $src_root/src/
+
+cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
+                "-I$out_pfx_inc" "-I$src_pfx_inc"
+
+{hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
+
+# Export options.
+lib{zmq}:
+{
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.libs = $intf_libs
+}
+
+liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
+
+# For pre-releases use the complete version to make sure they cannot be used
+# in place of another pre-release or the final version. See the version module
+# for details on the version.* variable values.
+if $version.pre_release
+  lib{zmq}: bin.lib.version = "-$version.project_id"
+else
+  lib{zmq}: bin.lib.version = "-$version.major.$version.minor"
+
+# Don't install private headers.
+#
+{hxx ixx txx}{*}: install = false
