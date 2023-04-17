@@ -1,0 +1,4 @@
+./: {*/ -build/} doc{README.md} legal{COPYING COPYING.LESSER} manifest
+
+# Don't install tests.
+tests/: install = false

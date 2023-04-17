@@ -1,0 +1,3 @@
+import libs = libzmq%lib{zmq}
+
+exe{driver}: {hxx ixx txx cxx}{**} $libs testscript{**}
