@@ -2,7 +2,7 @@ intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 
 # Public headers.
-pub = [dir_path] ../../include/libzmq/
+pub = [dir_path] ../include/
 
 include $pub
 
@@ -11,8 +11,10 @@ pub_hdrs = $($pub/ pub_hdrs)
 lib{zmq}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
-lib{zmq}: {hxx cxx}{* -ws_*} $impl_libs $intf_libs
+lib{zmq}: {hxx cxx}{* -ws_* -wss_* -tipc_*} hxx{*.h} $impl_libs $intf_libs
 lib{zmq}: {hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
+lib{zmq}: {hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
+lib{zmq}: {hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
 
 # Build options.
 out_pfx_inc = [dir_path] $out_root/include/
@@ -22,6 +24,287 @@ src_pfx_src = [dir_path] $src_root/src/
 
 cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
                 "-I$out_pfx_inc" "-I$src_pfx_inc"
+
+# always use STL11 condition variable, do not bother with pthread and windows alternatives
+cxx.poptions += -DZMQ_USE_CV_IMPL_STL11
+
+# always use noexcept, do not bother with a config option
+# should be supported by most compilers
+cxx.poptions += -DZMQ_HAVE_NOEXCEPT
+
+cxx.poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
+
+if $config.libzmq.enable_intrinsics
+{
+    cxx.poptions += -DZMQ_HAVE_ATOMIC_INTRINSICS
+}
+
+if $config.libzmq.enable_radix_tree
+{
+    cxx.poptions += -DZMQ_USE_RADIX_TREE
+}
+
+if $config.libzmq.force_mutexes
+{
+    cxx.poptions += -DZMQ_FORCE_MUTEXES
+}
+
+if $config.libzmq.has_fork
+{
+    cxx.poptions += -DHAVE_FORK
+}
+
+if $config.libzmq.has_clock_gettime
+{
+    cxx.poptions += -DHAVE_CLOCK_GETTIME
+}
+
+if $config.libzmq.has_gethrtime
+{
+    cxx.poptions += -DHAVE_GETHRTIME
+}
+
+if $config.libzmq.has_mkdtemp
+{
+    cxx.poptions += -DHAVE_MKDTEMP
+}
+
+if $config.libzmq.has_uio
+{
+    cxx.poptions += -DZMQ_HAVE_UIO
+}
+
+if $config.libzmq.has_eventfd
+{
+    cxx.poptions += -DZMQ_HAVE_EVENTFD
+}
+
+if $config.libzmq.has_eventfd_cloexec
+{
+    cxx.poptions += -DZMQ_HAVE_EVENTFD_CLOEXEC
+}
+
+if $config.libzmq.has_ifaddrs
+{
+    cxx.poptions += -DZMQ_HAVE_IFADDRS
+}
+
+if $config.libzmq.has_so_bindtodevice
+{
+    cxx.poptions += -DZMQ_HAVE_SO_BINDTODEVICE
+}
+
+if $config.libzmq.has_so_peercred
+{
+    cxx.poptions += -DZMQ_HAVE_SO_PEERCRED
+}
+
+if $config.libzmq.has_local_peercred
+{
+    cxx.poptions += -DZMQ_HAVE_LOCAL_PEERCRED
+}
+
+if $config.libzmq.has_o_cloexec
+{
+    cxx.poptions += -DZMQ_HAVE_O_CLOEXEC
+}
+
+if $config.libzmq.has_sock_cloexec
+{
+    cxx.poptions += -DZMQ_HAVE_SOCK_CLOEXEC
+}
+
+if $config.libzmq.has_so_keepalive
+{
+    cxx.poptions += -DZMQ_HAVE_SO_KEEPALIVE
+}
+
+if $config.libzmq.has_so_priority
+{
+    cxx.poptions += -DZMQ_HAVE_SO_PRIORITY
+}
+
+if $config.libzmq.has_tcp_keepcnt
+{
+    cxx.poptions += -DZMQ_HAVE_TCP_KEEPCNT
+}
+
+if $config.libzmq.has_tcp_keepidle
+{
+    cxx.poptions += -DZMQ_HAVE_TCP_KEEPIDLE
+}
+
+if $config.libzmq.has_tcp_keepintvl
+{
+    cxx.poptions += -DZMQ_HAVE_TCP_KEEPINTVL
+}
+
+if $config.libzmq.has_tcp_keepalive
+{
+    cxx.poptions += -DZMQ_HAVE_TCP_KEEPALIVE
+}
+
+if $config.libzmq.has_pthread_set_affinity
+{
+    cxx.poptions += -DZMQ_HAVE_PTHREAD_SET_AFFINITY
+}
+
+if $config.libzmq.has_accept4
+{
+    cxx.poptions += -DHAVE_ACCEPT4
+}
+
+if $config.libzmq.has_strnlen
+{
+    cxx.poptions += -DHAVE_STRNLEN
+}
+
+if $config.libzmq.has_strlcpy
+{
+    cxx.poptions += -DZMQ_HAVE_STRLCPY
+}
+
+if $config.libzmq.enable_ipc
+{
+    cxx.poptions += -DZMQ_HAVE_IPC
+}
+
+if $config.libzmq.enable_tipc
+{
+    cxx.poptions += -DZMQ_HAVE_TIPC
+}
+
+if $config.libzmq.enable_gnutls
+{
+    cxx.poptions += -DZMQ_USE_GNUTLS
+}
+else
+{
+    cxx.poptions += -DZMQ_USE_BUILTIN_SHA1
+}
+
+if $config.libzmq.militant_assert
+{
+    cxx.poptions += -DZMQ_ACT_MILITANT
+}
+
+if $config.libzmq.enable_ws
+{
+    cxx.poptions += -DZMQ_HAVE_WS
+
+    if $config.libzmq.has_gnutls
+    {
+        cxx.poptions += -DZMQ_HAVE_WSS
+    }
+}
+
+# if pthread_setname is not explicitly set, then determine it based on the target platform
+pthread_setname_mode = $config.libzmq.pthread_setname_mode
+if ($pthread_setname_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'macos'
+        {
+            # TODO
+        }
+        case 'linux'
+        {
+            pthread_setname_mode = 'setname_2'
+        }
+        default
+        {
+            pthread_setname_mode = 'setname_1'
+        }
+    }
+}
+
+switch $pthread_setname_mode
+{
+    case 'setname_1'
+    {
+        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_1
+    }
+    case 'setname_2'
+    {
+        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_2
+    }
+    case 'setname_3'
+    {
+        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_3
+    }
+    case 'set_name'
+    {
+        cxx.poptions += -DZMQ_HAVE_PTHREAD_SET_NAME
+    }
+    default
+    {
+        fail "invalid pthread_setname_mode $pthread_setname_mode"
+    }
+}
+
+# if poll mode is not explicitly set, then determine the mode based on the target platform
+poll_mode = $config.libzmq.poll_mode
+if ($poll_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'windows'
+        {
+            poll_mode = 'epoll'
+        }
+        case 'macos'
+        {
+            # TODO
+        }
+        case 'linux'
+        {
+            poll_mode = 'select'
+        }
+        default
+        {
+            poll_mode = 'select'
+        }
+    }
+}
+
+switch $poll_mode
+{
+    case 'kqueue'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_KQUEUE \
+                        -DZMQ_POLL_BASED_ON_POLL
+    }
+    case 'epoll'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_EPOLL \
+                        -DZMQ_POLL_BASED_ON_POLL
+    }
+    case 'devpoll'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_DEVPOLL \
+                        -DZMQ_POLL_BASED_ON_POLL
+    }
+    case 'pollset'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_POLLSET \
+                        -DZMQ_POLL_BASED_ON_POLL
+    }
+    case 'poll'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_POLL \
+                        -DZMQ_POLL_BASED_ON_POLL
+    }
+    case 'select'
+    {
+        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_SELECT \
+                        -DZMQ_POLL_BASED_ON_SELECT
+    }
+    default
+    {
+        fail "invalid poll mode $config.libzmq.poll_mode"
+    }
+}
 
 {hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
 
