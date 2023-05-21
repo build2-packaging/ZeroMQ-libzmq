@@ -1,6 +1,52 @@
 intf_libs = # Interface dependencies.
 impl_libs = # Implementation dependencies.
 
+# if poll mode is not explicitly set, then determine the mode based on the target platform
+poll_mode = $config.libzmq.poll_mode
+if ($poll_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'windows'
+        {
+            poll_mode = 'epoll'
+        }
+        case 'macos'
+        {
+            # TODO
+        }
+        case 'linux'
+        {
+            poll_mode = 'select'
+        }
+        default
+        {
+            poll_mode = 'select'
+        }
+    }
+}
+
+# if pthread_setname is not explicitly set, then determine it based on the target platform
+pthread_setname_mode = $config.libzmq.pthread_setname_mode
+if ($pthread_setname_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'macos'
+        {
+            # TODO
+        }
+        case 'linux'
+        {
+            pthread_setname_mode = 'setname_2'
+        }
+        default
+        {
+            pthread_setname_mode = 'setname_1'
+        }
+    }
+}
+
 # Public headers.
 pub = [dir_path] ../include/
 
@@ -11,10 +57,12 @@ pub_hdrs = $($pub/ pub_hdrs)
 lib{zmq}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
-lib{zmq}: {hxx cxx}{* -ws_* -wss_* -tipc_*} hxx{*.h} $impl_libs $intf_libs
-lib{zmq}: {hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
-lib{zmq}: {hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
-lib{zmq}: {hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
+lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*.h} $impl_libs $intf_libs
+lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
+lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
+lib{zmq}: src/{hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
+lib{zmq}: external/sha1/{h c}{*}: include = (!$config.libzmq.enable_gnutls)
+lib{zmq}: external/wepoll/{h c}{*}: include = (($config.target.class == 'windows') && ($poll_mode == 'epoll'))
 
 # Build options.
 out_pfx_inc = [dir_path] $out_root/include/
@@ -22,8 +70,8 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-cxx.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-                "-I$out_pfx_inc" "-I$src_pfx_inc"
+cxx.poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                "-I$out_pfx_src" "-I$src_pfx_src" \
 
 # always use STL11 condition variable, do not bother with pthread and windows alternatives
 cxx.poptions += -DZMQ_USE_CV_IMPL_STL11
@@ -192,30 +240,19 @@ if $config.libzmq.enable_ws
 {
     cxx.poptions += -DZMQ_HAVE_WS
 
-    if $config.libzmq.has_gnutls
+    if $config.libzmq.enable_gnutls
     {
         cxx.poptions += -DZMQ_HAVE_WSS
     }
 }
 
-# if pthread_setname is not explicitly set, then determine it based on the target platform
-pthread_setname_mode = $config.libzmq.pthread_setname_mode
-if ($pthread_setname_mode == none)
+if ($config.target.class == 'windows')
 {
-    switch $cxx.target.class
+    cxx.poptions += -DZMQ_HAVE_WINDOWS
+
+    if $config.libzmq.use_windows_uwp
     {
-        case 'macos'
-        {
-            # TODO
-        }
-        case 'linux'
-        {
-            pthread_setname_mode = 'setname_2'
-        }
-        default
-        {
-            pthread_setname_mode = 'setname_1'
-        }
+        cxx.poptions += -DZMQ_HAVE_WINDOWS_UWP
     }
 }
 
@@ -240,31 +277,6 @@ switch $pthread_setname_mode
     default
     {
         fail "invalid pthread_setname_mode $pthread_setname_mode"
-    }
-}
-
-# if poll mode is not explicitly set, then determine the mode based on the target platform
-poll_mode = $config.libzmq.poll_mode
-if ($poll_mode == none)
-{
-    switch $cxx.target.class
-    {
-        case 'windows'
-        {
-            poll_mode = 'epoll'
-        }
-        case 'macos'
-        {
-            # TODO
-        }
-        case 'linux'
-        {
-            poll_mode = 'select'
-        }
-        default
-        {
-            poll_mode = 'select'
-        }
     }
 }
 

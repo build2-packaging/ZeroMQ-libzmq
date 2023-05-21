@@ -1,9 +1,13 @@
 cxx.std = latest
 
 using cxx
+using c
 
 hxx{*}: extension = hpp
 cxx{*}: extension = cpp
+
+h{*}: extension = h
+c{*}: extension = c
 
 # Assume headers are importable unless stated otherwise.
 hxx{*}: cxx.importable = true
@@ -12,7 +16,7 @@ hxx{*}: cxx.importable = true
 test.target = $cxx.target
 
 config [bool] config.libzmq.enable_intrinsics ?= false
-config [bool] config.libzmq.enable_ws ?= false
+config [bool] config.libzmq.enable_ws ?= true
 config [bool] config.libzmq.enable_radix_tree ?= false
 config [bool] config.libzmq.enable_gnutls ?= false
 config [bool] config.libzmq.enable_ipc ?= true
@@ -59,7 +63,7 @@ config [bool] config.libzmq.has_tcp_keepalive ?= ($cxx.target.class != 'windows'
 config [bool] config.libzmq.has_pthread_set_affinity ?= ($cxx.target.class != 'windows')
 config [bool] config.libzmq.has_accept4 ?= ($cxx.target.class != 'windows')
 config [bool] config.libzmq.has_strnlen ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_strlcpy ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.has_strlcpy ?= false
 
 config [bool] config.libzmq.use_windows_uwp ?= false
 

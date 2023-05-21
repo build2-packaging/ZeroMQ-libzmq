@@ -1,1 +1,0 @@
-../../upstream/src/metadata.cpp
