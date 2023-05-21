@@ -1,0 +1,1 @@
+../../../../upstream/tests/test_xpub_nodrop.cpp

@@ -20,8 +20,8 @@ config [bool] config.libzmq.enable_ws ?= true
 config [bool] config.libzmq.enable_radix_tree ?= false
 config [bool] config.libzmq.enable_gnutls ?= false
 config [bool] config.libzmq.enable_ipc ?= true
-config [bool] config.libzmq.enable_tipc ?= ($cxx.target.class == 'linux')
-config [bool] config.libzmq.militant_assert ?= false
+config [bool] config.libzmq.enable_tipc ?= false
+config [bool] config.libzmq.enable_militant_assert ?= false
 
 # mode for polling, can be:
 # kqueue, epoll, devpoll, pollset, poll, select or none
@@ -37,33 +37,33 @@ config [string] config.libzmq.pthread_setname_mode ?= none
 config [bool] config.libzmq.force_mutexes ?= false
 
 # typically unix specific definitions
-config [bool] config.libzmq.has_fork ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_clock_gettime ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_gethrtime ?= false
-config [bool] config.libzmq.has_mkdtemp ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_uio ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_fork ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_clock_gettime ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_gethrtime ?= false
+config [bool] config.libzmq.use_mkdtemp ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_uio ?= ($cxx.target.class != 'windows')
 
-config [bool] config.libzmq.has_eventfd ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_eventfd_cloexec ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_ifaddrs ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_so_bindtodevice ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_eventfd ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_eventfd_cloexec ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_ifaddrs ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_so_bindtodevice ?= ($cxx.target.class != 'windows')
 
-config [bool] config.libzmq.has_so_peercred ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_local_peercred ?= false
-config [bool] config.libzmq.has_o_cloexec ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_so_peercred ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_local_peercred ?= false
+config [bool] config.libzmq.use_o_cloexec ?= ($cxx.target.class != 'windows')
 
-config [bool] config.libzmq.has_sock_cloexec ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_so_keepalive ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_so_priority ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_tcp_keepcnt ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_tcp_keepidle ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_tcp_keepintvl ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_tcp_keepalive ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_sock_cloexec ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_so_keepalive ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_so_priority ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_tcp_keepcnt ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_tcp_keepidle ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_tcp_keepintvl ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_tcp_keepalive ?= ($cxx.target.class != 'windows')
 
-config [bool] config.libzmq.has_pthread_set_affinity ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_accept4 ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_strnlen ?= ($cxx.target.class != 'windows')
-config [bool] config.libzmq.has_strlcpy ?= false
+config [bool] config.libzmq.use_pthread_set_affinity ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_accept4 ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_strnlen ?= ($cxx.target.class != 'windows')
+config [bool] config.libzmq.use_strlcpy ?= false
 
 config [bool] config.libzmq.use_windows_uwp ?= false
 

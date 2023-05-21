@@ -1,0 +1,114 @@
+import libs = libzmq%lib{zmq}
+
+cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/"
+
+liba{testutil}: tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
+
+tests = tests/cxx{test_ancillaries \
+    test_system \
+    test_pair_inproc \
+    test_pair_tcp \
+    test_reqrep_inproc \
+    test_reqrep_tcp \
+    test_hwm \
+    test_hwm_pubsub \
+    test_reqrep_device \
+    test_sub_forward \
+    test_invalid_rep \
+    test_msg_flags \
+    test_msg_ffn \
+    test_connect_resolve \
+    test_immediate \
+    test_last_endpoint \
+    test_term_endpoint \
+    test_router_mandatory \
+    test_probe_router \
+    test_stream \
+    test_stream_empty \
+    test_stream_disconnect \
+    test_disconnect_inproc \
+    test_unbind_wildcard \
+    test_ctx_options \
+    test_ctx_destroy \
+    test_security_no_zap_handler \
+    test_security_null \
+    test_security_plain \
+    test_security_zap \
+    test_spec_req \
+    test_spec_rep \
+    test_spec_dealer \
+    test_spec_router \
+    test_spec_pushpull \
+    test_req_correlate \
+    test_req_relaxed \
+    test_conflate \
+    test_inproc_connect \
+    test_issue_566 \
+    test_shutdown_stress \
+    test_timeo \
+    test_many_sockets \
+    test_diffserv \
+    test_connect_rid \
+    test_xpub_nodrop \
+    test_pub_invert_matching \
+    test_setsockopt \
+    test_sockopt_hwm \
+    test_heartbeats \
+    test_atomics \
+    test_bind_src_address \
+    test_capabilities \
+    test_metadata \
+    test_router_handover \
+    test_srcfd \
+    test_stream_timeout \
+    test_xpub_manual \
+    test_xpub_welcome_msg \
+    test_xpub_verbose \
+    test_base85 \
+    test_bind_after_connect_tcp \
+    test_sodium \
+    test_monitor \
+    test_socket_null \
+    test_reconnect_ivl \
+    test_reconnect_options \
+    test_tcp_accept_filter \
+    test_mock_pub_sub}
+
+if ($config.target.class != 'windows')
+{
+    tests += tests/cxx{test_proxy \
+        test_proxy_hwm \
+        test_proxy_single_socket \
+        test_proxy_terminate \
+        test_getsockopt_memset \
+        test_filter_ipc \
+        test_stream_exceeds_buffer \
+        test_router_mandatory_hwm \
+        test_use_fd \
+        test_zmq_poll_fd}
+}
+
+if ($config.target.class == 'linux')
+{
+    tests += tests/cxx{test_abstract_ipc}
+}
+
+if $config.libzmq.enable_tipc
+{
+    tests += tests/cxx{*_tipc}
+}
+
+if $config.libzmq.enable_ws
+{
+    tests += tests/cxx{test_ws_transport}
+    if $config.libzmq.enable_gnutls
+    {
+        tests += tests/cxx{test_wss_transport}
+    }
+}
+
+for test_src: $tests
+{
+    exe{$name($test_src)}: $test_src src/hxx{platform} liba{testutil} $libs
+    ./: exe{$name($test_src)}
+}

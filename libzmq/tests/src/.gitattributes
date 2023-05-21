@@ -1,0 +1,2 @@
+external symlink=dir
+include symlink=dir
