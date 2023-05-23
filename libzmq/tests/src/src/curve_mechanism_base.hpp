@@ -1,1 +1,0 @@
-../../../../upstream/src/curve_mechanism_base.hpp

@@ -1,6 +1,7 @@
 import libs = libzmq%lib{zmq}
 
-cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/"
+cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/" \
+                "-I$out_root/tests/" "-I$src_root/tests/"
 
 liba{testutil}: tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
 
