@@ -97,117 +97,117 @@ if $config.libzmq.force_mutexes
     cxx.poptions += -DZMQ_FORCE_MUTEXES
 }
 
-if $config.libzmq.has_fork
+if $config.libzmq.use_fork
 {
     cxx.poptions += -DHAVE_FORK
 }
 
-if $config.libzmq.has_clock_gettime
+if $config.libzmq.use_clock_gettime
 {
     cxx.poptions += -DHAVE_CLOCK_GETTIME
 }
 
-if $config.libzmq.has_gethrtime
+if $config.libzmq.use_gethrtime
 {
     cxx.poptions += -DHAVE_GETHRTIME
 }
 
-if $config.libzmq.has_mkdtemp
+if $config.libzmq.use_mkdtemp
 {
     cxx.poptions += -DHAVE_MKDTEMP
 }
 
-if $config.libzmq.has_uio
+if $config.libzmq.use_uio
 {
     cxx.poptions += -DZMQ_HAVE_UIO
 }
 
-if $config.libzmq.has_eventfd
+if $config.libzmq.use_eventfd
 {
     cxx.poptions += -DZMQ_HAVE_EVENTFD
 }
 
-if $config.libzmq.has_eventfd_cloexec
+if $config.libzmq.use_eventfd_cloexec
 {
     cxx.poptions += -DZMQ_HAVE_EVENTFD_CLOEXEC
 }
 
-if $config.libzmq.has_ifaddrs
+if $config.libzmq.use_ifaddrs
 {
     cxx.poptions += -DZMQ_HAVE_IFADDRS
 }
 
-if $config.libzmq.has_so_bindtodevice
+if $config.libzmq.use_so_bindtodevice
 {
     cxx.poptions += -DZMQ_HAVE_SO_BINDTODEVICE
 }
 
-if $config.libzmq.has_so_peercred
+if $config.libzmq.use_so_peercred
 {
     cxx.poptions += -DZMQ_HAVE_SO_PEERCRED
 }
 
-if $config.libzmq.has_local_peercred
+if $config.libzmq.use_local_peercred
 {
     cxx.poptions += -DZMQ_HAVE_LOCAL_PEERCRED
 }
 
-if $config.libzmq.has_o_cloexec
+if $config.libzmq.use_o_cloexec
 {
     cxx.poptions += -DZMQ_HAVE_O_CLOEXEC
 }
 
-if $config.libzmq.has_sock_cloexec
+if $config.libzmq.use_sock_cloexec
 {
     cxx.poptions += -DZMQ_HAVE_SOCK_CLOEXEC
 }
 
-if $config.libzmq.has_so_keepalive
+if $config.libzmq.use_so_keepalive
 {
     cxx.poptions += -DZMQ_HAVE_SO_KEEPALIVE
 }
 
-if $config.libzmq.has_so_priority
+if $config.libzmq.use_so_priority
 {
     cxx.poptions += -DZMQ_HAVE_SO_PRIORITY
 }
 
-if $config.libzmq.has_tcp_keepcnt
+if $config.libzmq.use_tcp_keepcnt
 {
     cxx.poptions += -DZMQ_HAVE_TCP_KEEPCNT
 }
 
-if $config.libzmq.has_tcp_keepidle
+if $config.libzmq.use_tcp_keepidle
 {
     cxx.poptions += -DZMQ_HAVE_TCP_KEEPIDLE
 }
 
-if $config.libzmq.has_tcp_keepintvl
+if $config.libzmq.use_tcp_keepintvl
 {
     cxx.poptions += -DZMQ_HAVE_TCP_KEEPINTVL
 }
 
-if $config.libzmq.has_tcp_keepalive
+if $config.libzmq.use_tcp_keepalive
 {
     cxx.poptions += -DZMQ_HAVE_TCP_KEEPALIVE
 }
 
-if $config.libzmq.has_pthread_set_affinity
+if $config.libzmq.use_pthread_set_affinity
 {
     cxx.poptions += -DZMQ_HAVE_PTHREAD_SET_AFFINITY
 }
 
-if $config.libzmq.has_accept4
+if $config.libzmq.use_accept4
 {
     cxx.poptions += -DHAVE_ACCEPT4
 }
 
-if $config.libzmq.has_strnlen
+if $config.libzmq.use_strnlen
 {
     cxx.poptions += -DHAVE_STRNLEN
 }
 
-if $config.libzmq.has_strlcpy
+if $config.libzmq.use_strlcpy
 {
     cxx.poptions += -DZMQ_HAVE_STRLCPY
 }
@@ -231,7 +231,7 @@ else
     cxx.poptions += -DZMQ_USE_BUILTIN_SHA1
 }
 
-if $config.libzmq.militant_assert
+if $config.libzmq.enable_militant_assert
 {
     cxx.poptions += -DZMQ_ACT_MILITANT
 }

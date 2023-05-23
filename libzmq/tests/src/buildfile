@@ -109,6 +109,6 @@ if $config.libzmq.enable_ws
 
 for test_src: $tests
 {
-    exe{$name($test_src)}: $test_src src/hxx{platform} liba{testutil} $libs
+    exe{$name($test_src)}: $test_src src/hxx{platform} liba{testutil} src/hxx{*} include/hxx{*} external/hxx{**} $libs
     ./: exe{$name($test_src)}
 }
