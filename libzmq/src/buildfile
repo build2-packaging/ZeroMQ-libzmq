@@ -10,7 +10,7 @@ if ($poll_mode == none)
         }
         case 'macos'
         {
-            # TODO
+            poll_mode = 'kqueue'
         }
         case 'linux'
         {
@@ -31,7 +31,7 @@ if ($pthread_setname_mode == none)
     {
         case 'macos'
         {
-            # TODO
+            pthread_setname_mode = 'setname_1'
         }
         case 'linux'
         {
