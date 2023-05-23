@@ -38,3 +38,6 @@ doc/latex
 *.exe.dlls/
 *.exe.manifest
 *.pc
+
+test_filter_ipc.sock
+tmp*/

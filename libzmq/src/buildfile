@@ -70,189 +70,190 @@ src_pfx_inc = [dir_path] $src_root/include/
 out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
-cxx.poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc" \
-                "-I$out_pfx_src" "-I$src_pfx_src" \
+impl_poptions =
+impl_poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc" \
+                 "-I$out_pfx_src" "-I$src_pfx_src" \
 
 # always use STL11 condition variable, do not bother with pthread and windows alternatives
-cxx.poptions += -DZMQ_USE_CV_IMPL_STL11
+impl_poptions += -DZMQ_USE_CV_IMPL_STL11
 
 # always use noexcept, do not bother with a config option
 # should be supported by most compilers
-cxx.poptions += -DZMQ_HAVE_NOEXCEPT
+impl_poptions += -DZMQ_HAVE_NOEXCEPT
 
-cxx.poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
+impl_poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
 
 if $config.libzmq.enable_intrinsics
 {
-    cxx.poptions += -DZMQ_HAVE_ATOMIC_INTRINSICS
+    impl_poptions += -DZMQ_HAVE_ATOMIC_INTRINSICS
 }
 
 if $config.libzmq.enable_radix_tree
 {
-    cxx.poptions += -DZMQ_USE_RADIX_TREE
+    impl_poptions += -DZMQ_USE_RADIX_TREE
 }
 
 if $config.libzmq.force_mutexes
 {
-    cxx.poptions += -DZMQ_FORCE_MUTEXES
+    impl_poptions += -DZMQ_FORCE_MUTEXES
 }
 
 if $config.libzmq.use_fork
 {
-    cxx.poptions += -DHAVE_FORK
+    impl_poptions += -DHAVE_FORK
 }
 
 if $config.libzmq.use_clock_gettime
 {
-    cxx.poptions += -DHAVE_CLOCK_GETTIME
+    impl_poptions += -DHAVE_CLOCK_GETTIME
 }
 
 if $config.libzmq.use_gethrtime
 {
-    cxx.poptions += -DHAVE_GETHRTIME
+    impl_poptions += -DHAVE_GETHRTIME
 }
 
 if $config.libzmq.use_mkdtemp
 {
-    cxx.poptions += -DHAVE_MKDTEMP
+    impl_poptions += -DHAVE_MKDTEMP
 }
 
 if $config.libzmq.use_uio
 {
-    cxx.poptions += -DZMQ_HAVE_UIO
+    impl_poptions += -DZMQ_HAVE_UIO
 }
 
 if $config.libzmq.use_eventfd
 {
-    cxx.poptions += -DZMQ_HAVE_EVENTFD
+    impl_poptions += -DZMQ_HAVE_EVENTFD
 }
 
 if $config.libzmq.use_eventfd_cloexec
 {
-    cxx.poptions += -DZMQ_HAVE_EVENTFD_CLOEXEC
+    impl_poptions += -DZMQ_HAVE_EVENTFD_CLOEXEC
 }
 
 if $config.libzmq.use_ifaddrs
 {
-    cxx.poptions += -DZMQ_HAVE_IFADDRS
+    impl_poptions += -DZMQ_HAVE_IFADDRS
 }
 
 if $config.libzmq.use_so_bindtodevice
 {
-    cxx.poptions += -DZMQ_HAVE_SO_BINDTODEVICE
+    impl_poptions += -DZMQ_HAVE_SO_BINDTODEVICE
 }
 
 if $config.libzmq.use_so_peercred
 {
-    cxx.poptions += -DZMQ_HAVE_SO_PEERCRED
+    impl_poptions += -DZMQ_HAVE_SO_PEERCRED
 }
 
 if $config.libzmq.use_local_peercred
 {
-    cxx.poptions += -DZMQ_HAVE_LOCAL_PEERCRED
+    impl_poptions += -DZMQ_HAVE_LOCAL_PEERCRED
 }
 
 if $config.libzmq.use_o_cloexec
 {
-    cxx.poptions += -DZMQ_HAVE_O_CLOEXEC
+    impl_poptions += -DZMQ_HAVE_O_CLOEXEC
 }
 
 if $config.libzmq.use_sock_cloexec
 {
-    cxx.poptions += -DZMQ_HAVE_SOCK_CLOEXEC
+    impl_poptions += -DZMQ_HAVE_SOCK_CLOEXEC
 }
 
 if $config.libzmq.use_so_keepalive
 {
-    cxx.poptions += -DZMQ_HAVE_SO_KEEPALIVE
+    impl_poptions += -DZMQ_HAVE_SO_KEEPALIVE
 }
 
 if $config.libzmq.use_so_priority
 {
-    cxx.poptions += -DZMQ_HAVE_SO_PRIORITY
+    impl_poptions += -DZMQ_HAVE_SO_PRIORITY
 }
 
 if $config.libzmq.use_tcp_keepcnt
 {
-    cxx.poptions += -DZMQ_HAVE_TCP_KEEPCNT
+    impl_poptions += -DZMQ_HAVE_TCP_KEEPCNT
 }
 
 if $config.libzmq.use_tcp_keepidle
 {
-    cxx.poptions += -DZMQ_HAVE_TCP_KEEPIDLE
+    impl_poptions += -DZMQ_HAVE_TCP_KEEPIDLE
 }
 
 if $config.libzmq.use_tcp_keepintvl
 {
-    cxx.poptions += -DZMQ_HAVE_TCP_KEEPINTVL
+    impl_poptions += -DZMQ_HAVE_TCP_KEEPINTVL
 }
 
 if $config.libzmq.use_tcp_keepalive
 {
-    cxx.poptions += -DZMQ_HAVE_TCP_KEEPALIVE
+    impl_poptions += -DZMQ_HAVE_TCP_KEEPALIVE
 }
 
 if $config.libzmq.use_pthread_set_affinity
 {
-    cxx.poptions += -DZMQ_HAVE_PTHREAD_SET_AFFINITY
+    impl_poptions += -DZMQ_HAVE_PTHREAD_SET_AFFINITY
 }
 
 if $config.libzmq.use_accept4
 {
-    cxx.poptions += -DHAVE_ACCEPT4
+    impl_poptions += -DHAVE_ACCEPT4
 }
 
 if $config.libzmq.use_strnlen
 {
-    cxx.poptions += -DHAVE_STRNLEN
+    impl_poptions += -DHAVE_STRNLEN
 }
 
 if $config.libzmq.use_strlcpy
 {
-    cxx.poptions += -DZMQ_HAVE_STRLCPY
+    impl_poptions += -DZMQ_HAVE_STRLCPY
 }
 
 if $config.libzmq.enable_ipc
 {
-    cxx.poptions += -DZMQ_HAVE_IPC
+    impl_poptions += -DZMQ_HAVE_IPC
 }
 
 if $config.libzmq.enable_tipc
 {
-    cxx.poptions += -DZMQ_HAVE_TIPC
+    impl_poptions += -DZMQ_HAVE_TIPC
 }
 
 if $config.libzmq.enable_gnutls
 {
-    cxx.poptions += -DZMQ_USE_GNUTLS
+    impl_poptions += -DZMQ_USE_GNUTLS
 }
 else
 {
-    cxx.poptions += -DZMQ_USE_BUILTIN_SHA1
+    impl_poptions += -DZMQ_USE_BUILTIN_SHA1
 }
 
 if $config.libzmq.enable_militant_assert
 {
-    cxx.poptions += -DZMQ_ACT_MILITANT
+    impl_poptions += -DZMQ_ACT_MILITANT
 }
 
 if $config.libzmq.enable_ws
 {
-    cxx.poptions += -DZMQ_HAVE_WS
+    impl_poptions += -DZMQ_HAVE_WS
 
     if $config.libzmq.enable_gnutls
     {
-        cxx.poptions += -DZMQ_HAVE_WSS
+        impl_poptions += -DZMQ_HAVE_WSS
     }
 }
 
 if ($config.target.class == 'windows')
 {
-    cxx.poptions += -DZMQ_HAVE_WINDOWS
+    impl_poptions += -DZMQ_HAVE_WINDOWS
 
     if $config.libzmq.use_windows_uwp
     {
-        cxx.poptions += -DZMQ_HAVE_WINDOWS_UWP
+        impl_poptions += -DZMQ_HAVE_WINDOWS_UWP
     }
 }
 
@@ -260,19 +261,19 @@ switch $pthread_setname_mode
 {
     case 'setname_1'
     {
-        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_1
+        impl_poptions += -DZMQ_HAVE_PTHREAD_SETNAME_1
     }
     case 'setname_2'
     {
-        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_2
+        impl_poptions += -DZMQ_HAVE_PTHREAD_SETNAME_2
     }
     case 'setname_3'
     {
-        cxx.poptions += -DZMQ_HAVE_PTHREAD_SETNAME_3
+        impl_poptions += -DZMQ_HAVE_PTHREAD_SETNAME_3
     }
     case 'set_name'
     {
-        cxx.poptions += -DZMQ_HAVE_PTHREAD_SET_NAME
+        impl_poptions += -DZMQ_HAVE_PTHREAD_SET_NAME
     }
     default
     {
@@ -284,33 +285,33 @@ switch $poll_mode
 {
     case 'kqueue'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_KQUEUE \
-                        -DZMQ_POLL_BASED_ON_POLL
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_KQUEUE \
+                         -DZMQ_POLL_BASED_ON_POLL
     }
     case 'epoll'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_EPOLL \
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_EPOLL \
                         -DZMQ_POLL_BASED_ON_POLL
     }
     case 'devpoll'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_DEVPOLL \
-                        -DZMQ_POLL_BASED_ON_POLL
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_DEVPOLL \
+                         -DZMQ_POLL_BASED_ON_POLL
     }
     case 'pollset'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_POLLSET \
-                        -DZMQ_POLL_BASED_ON_POLL
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_POLLSET \
+                         -DZMQ_POLL_BASED_ON_POLL
     }
     case 'poll'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_POLL \
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_POLL \
                         -DZMQ_POLL_BASED_ON_POLL
     }
     case 'select'
     {
-        cxx.poptions += -DZMQ_IOTHREAD_POLLER_USE_SELECT \
-                        -DZMQ_POLL_BASED_ON_SELECT
+        impl_poptions += -DZMQ_IOTHREAD_POLLER_USE_SELECT \
+                         -DZMQ_POLL_BASED_ON_SELECT
     }
     default
     {
@@ -318,6 +319,7 @@ switch $poll_mode
     }
 }
 
+cxx.poptions += $impl_poptions
 {hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
 
 # Export options.
@@ -328,6 +330,15 @@ lib{zmq}:
 }
 
 liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
+
+# create a separate target which exports the private poptions
+# these are required by the tests
+[rule_hint=cxx] lib{zmq_test}: lib{zmq}
+lib{zmq_test}:
+{
+  cxx.export.poptions = $impl_poptions
+  cxx.export.libs = lib{zmq}
+}
 
 # For pre-releases use the complete version to make sure they cannot be used
 # in place of another pre-release or the final version. See the version module
