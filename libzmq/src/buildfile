@@ -1,6 +1,3 @@
-intf_libs = # Interface dependencies.
-impl_libs = # Implementation dependencies.
-
 # if poll mode is not explicitly set, then determine the mode based on the target platform
 poll_mode = $config.libzmq.poll_mode
 if ($poll_mode == none)
@@ -57,7 +54,7 @@ pub_hdrs = $($pub/ pub_hdrs)
 lib{zmq}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
-lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*.h} $impl_libs $intf_libs
+lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*.h}
 lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
 lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
 lib{zmq}: src/{hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
@@ -326,7 +323,6 @@ cxx.poptions += $impl_poptions
 lib{zmq}:
 {
   cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
-  cxx.export.libs = $intf_libs
 }
 
 liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
