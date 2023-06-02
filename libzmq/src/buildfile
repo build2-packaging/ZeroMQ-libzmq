@@ -54,6 +54,7 @@ pub_hdrs = $($pub/ pub_hdrs)
 lib{zmq}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
+lib{zmq}: hxx{platform}
 lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*.h}
 lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
 lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
@@ -68,7 +69,7 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 impl_poptions =
-impl_poptions =+ "-I$out_pfx_inc" "-I$src_pfx_inc" \
+impl_poptions += "-I$out_pfx_inc" "-I$src_pfx_inc" \
                  "-I$out_pfx_src" "-I$src_pfx_src" \
 
 # always use STL11 condition variable, do not bother with pthread and windows alternatives
