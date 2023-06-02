@@ -68,3 +68,50 @@ config [bool] config.libzmq.use_strlcpy ?= false
 config [bool] config.libzmq.use_windows_uwp ?= false
 
 config [uint64] config.libzmq.cacheline_size ?= 64
+
+
+# if poll mode is not explicitly set, then determine the mode based on the target platform
+poll_mode = $config.libzmq.poll_mode
+if ($poll_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'windows'
+        {
+            poll_mode = 'epoll'
+        }
+        case 'macos'
+        {
+            poll_mode = 'kqueue'
+        }
+        case 'linux'
+        {
+            poll_mode = 'select'
+        }
+        default
+        {
+            poll_mode = 'select'
+        }
+    }
+}
+
+# if pthread_setname is not explicitly set, then determine it based on the target platform
+pthread_setname_mode = $config.libzmq.pthread_setname_mode
+if ($pthread_setname_mode == none)
+{
+    switch $cxx.target.class
+    {
+        case 'macos'
+        {
+            pthread_setname_mode = 'setname_1'
+        }
+        case 'linux'
+        {
+            pthread_setname_mode = 'setname_2'
+        }
+        default
+        {
+            pthread_setname_mode = 'setname_1'
+        }
+    }
+}

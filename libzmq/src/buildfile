@@ -1,49 +1,3 @@
-# if poll mode is not explicitly set, then determine the mode based on the target platform
-poll_mode = $config.libzmq.poll_mode
-if ($poll_mode == none)
-{
-    switch $cxx.target.class
-    {
-        case 'windows'
-        {
-            poll_mode = 'epoll'
-        }
-        case 'macos'
-        {
-            poll_mode = 'kqueue'
-        }
-        case 'linux'
-        {
-            poll_mode = 'select'
-        }
-        default
-        {
-            poll_mode = 'select'
-        }
-    }
-}
-
-# if pthread_setname is not explicitly set, then determine it based on the target platform
-pthread_setname_mode = $config.libzmq.pthread_setname_mode
-if ($pthread_setname_mode == none)
-{
-    switch $cxx.target.class
-    {
-        case 'macos'
-        {
-            pthread_setname_mode = 'setname_1'
-        }
-        case 'linux'
-        {
-            pthread_setname_mode = 'setname_2'
-        }
-        default
-        {
-            pthread_setname_mode = 'setname_1'
-        }
-    }
-}
-
 # Public headers.
 pub = [dir_path] ../include/
 
@@ -81,177 +35,87 @@ impl_poptions += -DZMQ_HAVE_NOEXCEPT
 
 impl_poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
 
-if $config.libzmq.enable_intrinsics
-{
-    impl_poptions += -DZMQ_HAVE_ATOMIC_INTRINSICS
-}
+config_flags = \
+    $config.libzmq.enable_intrinsics \
+    $config.libzmq.enable_radix_tree \
+    $config.libzmq.force_mutexes \
+    $config.libzmq.use_fork \
+    $config.libzmq.use_clock_gettime \
+    $config.libzmq.use_gethrtime \
+    $config.libzmq.use_mkdtemp \
+    $config.libzmq.use_uio \
+    $config.libzmq.use_eventfd \
+    $config.libzmq.use_eventfd_cloexec \
+    $config.libzmq.use_ifaddrs \
+    $config.libzmq.use_so_bindtodevice \
+    $config.libzmq.use_so_peercred \
+    $config.libzmq.use_local_peercred \
+    $config.libzmq.use_o_cloexec \
+    $config.libzmq.use_sock_cloexec \
+    $config.libzmq.use_so_keepalive \
+    $config.libzmq.use_so_priority \
+    $config.libzmq.use_tcp_keepcnt \
+    $config.libzmq.use_tcp_keepidle \
+    $config.libzmq.use_tcp_keepintvl \
+    $config.libzmq.use_tcp_keepalive \
+    $config.libzmq.use_pthread_set_affinity \
+    $config.libzmq.use_accept4 \
+    $config.libzmq.use_strnlen \
+    $config.libzmq.use_strlcpy \
+    $config.libzmq.enable_ipc \
+    $config.libzmq.enable_tipc \
+    $config.libzmq.enable_gnutls \
+    (!$config.libzmq.enable_gnutls) \
+    $config.libzmq.enable_militant_assert \
+    $config.libzmq.enable_ws \
+    ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls) \
+    ($config.target.class == 'windows') \
+    (($config.target.class == 'windows') && $config.libzmq.use_windows_uwp)
 
-if $config.libzmq.enable_radix_tree
-{
-    impl_poptions += -DZMQ_USE_RADIX_TREE
-}
+config_poptions = \
+    ZMQ_HAVE_ATOMIC_INTRINSICS \
+    ZMQ_USE_RADIX_TREE \
+    ZMQ_FORCE_MUTEXES \
+    HAVE_FORK \
+    HAVE_CLOCK_GETTIME \
+    HAVE_GETHRTIME \
+    HAVE_MKDTEMP \
+    ZMQ_HAVE_UIO \
+    ZMQ_HAVE_EVENTFD \
+    ZMQ_HAVE_EVENTFD_CLOEXEC \
+    ZMQ_HAVE_IFADDRS \
+    ZMQ_HAVE_SO_BINDTODEVICE \
+    ZMQ_HAVE_SO_PEERCRED \
+    ZMQ_HAVE_LOCAL_PEERCRED \
+    ZMQ_HAVE_O_CLOEXEC \
+    ZMQ_HAVE_SOCK_CLOEXEC \
+    ZMQ_HAVE_SO_KEEPALIVE \
+    ZMQ_HAVE_SO_PRIORITY \
+    ZMQ_HAVE_TCP_KEEPCNT \
+    ZMQ_HAVE_TCP_KEEPIDLE \
+    ZMQ_HAVE_TCP_KEEPINTVL \
+    ZMQ_HAVE_TCP_KEEPALIVE \
+    ZMQ_HAVE_PTHREAD_SET_AFFINITY \
+    HAVE_ACCEPT4 \
+    HAVE_STRNLEN \
+    ZMQ_HAVE_STRLCPY \
+    ZMQ_HAVE_IPC \
+    ZMQ_HAVE_TIPC \
+    ZMQ_USE_GNUTLS \
+    ZMQ_USE_BUILTIN_SHA1 \
+    ZMQ_ACT_MILITANT \
+    ZMQ_HAVE_WS \
+    ZMQ_HAVE_WSS \
+    ZMQ_HAVE_WINDOWS \
+    ZMQ_HAVE_WINDOWS_UWP
 
-if $config.libzmq.force_mutexes
+for i: $integer_sequence(0, $size($config_poptions))
 {
-    impl_poptions += -DZMQ_FORCE_MUTEXES
-}
-
-if $config.libzmq.use_fork
-{
-    impl_poptions += -DHAVE_FORK
-}
-
-if $config.libzmq.use_clock_gettime
-{
-    impl_poptions += -DHAVE_CLOCK_GETTIME
-}
-
-if $config.libzmq.use_gethrtime
-{
-    impl_poptions += -DHAVE_GETHRTIME
-}
-
-if $config.libzmq.use_mkdtemp
-{
-    impl_poptions += -DHAVE_MKDTEMP
-}
-
-if $config.libzmq.use_uio
-{
-    impl_poptions += -DZMQ_HAVE_UIO
-}
-
-if $config.libzmq.use_eventfd
-{
-    impl_poptions += -DZMQ_HAVE_EVENTFD
-}
-
-if $config.libzmq.use_eventfd_cloexec
-{
-    impl_poptions += -DZMQ_HAVE_EVENTFD_CLOEXEC
-}
-
-if $config.libzmq.use_ifaddrs
-{
-    impl_poptions += -DZMQ_HAVE_IFADDRS
-}
-
-if $config.libzmq.use_so_bindtodevice
-{
-    impl_poptions += -DZMQ_HAVE_SO_BINDTODEVICE
-}
-
-if $config.libzmq.use_so_peercred
-{
-    impl_poptions += -DZMQ_HAVE_SO_PEERCRED
-}
-
-if $config.libzmq.use_local_peercred
-{
-    impl_poptions += -DZMQ_HAVE_LOCAL_PEERCRED
-}
-
-if $config.libzmq.use_o_cloexec
-{
-    impl_poptions += -DZMQ_HAVE_O_CLOEXEC
-}
-
-if $config.libzmq.use_sock_cloexec
-{
-    impl_poptions += -DZMQ_HAVE_SOCK_CLOEXEC
-}
-
-if $config.libzmq.use_so_keepalive
-{
-    impl_poptions += -DZMQ_HAVE_SO_KEEPALIVE
-}
-
-if $config.libzmq.use_so_priority
-{
-    impl_poptions += -DZMQ_HAVE_SO_PRIORITY
-}
-
-if $config.libzmq.use_tcp_keepcnt
-{
-    impl_poptions += -DZMQ_HAVE_TCP_KEEPCNT
-}
-
-if $config.libzmq.use_tcp_keepidle
-{
-    impl_poptions += -DZMQ_HAVE_TCP_KEEPIDLE
-}
-
-if $config.libzmq.use_tcp_keepintvl
-{
-    impl_poptions += -DZMQ_HAVE_TCP_KEEPINTVL
-}
-
-if $config.libzmq.use_tcp_keepalive
-{
-    impl_poptions += -DZMQ_HAVE_TCP_KEEPALIVE
-}
-
-if $config.libzmq.use_pthread_set_affinity
-{
-    impl_poptions += -DZMQ_HAVE_PTHREAD_SET_AFFINITY
-}
-
-if $config.libzmq.use_accept4
-{
-    impl_poptions += -DHAVE_ACCEPT4
-}
-
-if $config.libzmq.use_strnlen
-{
-    impl_poptions += -DHAVE_STRNLEN
-}
-
-if $config.libzmq.use_strlcpy
-{
-    impl_poptions += -DZMQ_HAVE_STRLCPY
-}
-
-if $config.libzmq.enable_ipc
-{
-    impl_poptions += -DZMQ_HAVE_IPC
-}
-
-if $config.libzmq.enable_tipc
-{
-    impl_poptions += -DZMQ_HAVE_TIPC
-}
-
-if $config.libzmq.enable_gnutls
-{
-    impl_poptions += -DZMQ_USE_GNUTLS
-}
-else
-{
-    impl_poptions += -DZMQ_USE_BUILTIN_SHA1
-}
-
-if $config.libzmq.enable_militant_assert
-{
-    impl_poptions += -DZMQ_ACT_MILITANT
-}
-
-if $config.libzmq.enable_ws
-{
-    impl_poptions += -DZMQ_HAVE_WS
-
-    if $config.libzmq.enable_gnutls
+    flag = ($config_flags[$i])
+    opt = ($config_poptions[$i])
+    if $flag
     {
-        impl_poptions += -DZMQ_HAVE_WSS
-    }
-}
-
-if ($config.target.class == 'windows')
-{
-    impl_poptions += -DZMQ_HAVE_WINDOWS
-
-    if $config.libzmq.use_windows_uwp
-    {
-        impl_poptions += -DZMQ_HAVE_WINDOWS_UWP
+        impl_poptions += -D$opt
     }
 }
 
