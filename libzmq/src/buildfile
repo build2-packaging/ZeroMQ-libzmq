@@ -3,6 +3,8 @@ pub = [dir_path] ../include/
 
 include $pub
 
+is_windows = ($cxx.target.class == 'windows')
+
 pub_hdrs = $($pub/ pub_hdrs)
 
 lib{zmq}: $pub/{$pub_hdrs}
@@ -14,7 +16,7 @@ lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
 lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
 lib{zmq}: src/{hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
 lib{zmq}: external/sha1/{h c}{*}: include = (!$config.libzmq.enable_gnutls)
-lib{zmq}: external/wepoll/{h c}{*}: include = (($config.target.class == 'windows') && ($poll_mode == 'epoll'))
+lib{zmq}: external/wepoll/{h c}{*}: include = ($is_windows && ($poll_mode == 'epoll'))
 
 # Build options.
 out_pfx_inc = [dir_path] $out_root/include/
@@ -34,6 +36,8 @@ impl_poptions += -DZMQ_USE_CV_IMPL_STL11
 impl_poptions += -DZMQ_HAVE_NOEXCEPT
 
 impl_poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
+
+
 
 config_flags = \
     $config.libzmq.enable_intrinsics \
@@ -69,8 +73,8 @@ config_flags = \
     $config.libzmq.enable_militant_assert \
     $config.libzmq.enable_ws \
     ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls) \
-    ($config.target.class == 'windows') \
-    (($config.target.class == 'windows') && $config.libzmq.use_windows_uwp)
+    $is_windows \
+    ($is_windows && $config.libzmq.use_windows_uwp)
 
 config_poptions = \
     ZMQ_HAVE_ATOMIC_INTRINSICS \
