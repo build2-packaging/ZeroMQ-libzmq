@@ -1,0 +1,39 @@
+# determine the mode based on the target platform
+poll_mode_default = $config.libzmq.poll_mode
+switch $cxx.target.class
+{
+    case 'windows'
+    {
+        poll_mode_default = 'epoll'
+    }
+    case 'macos'
+    {
+        poll_mode_default = 'kqueue'
+    }
+    case 'linux'
+    {
+        poll_mode_default = 'select'
+    }
+    default
+    {
+        poll_mode_default = 'select'
+    }
+}
+
+# then determine it based on the target platform
+pthread_setname_mode_default = $config.libzmq.pthread_setname_mode
+switch $cxx.target.class
+{
+    case 'macos'
+    {
+        pthread_setname_mode_default = 'setname_1'
+    }
+    case 'linux'
+    {
+        pthread_setname_mode_default = 'setname_2'
+    }
+    default
+    {
+        pthread_setname_mode_default = 'setname_1'
+    }
+}

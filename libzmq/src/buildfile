@@ -3,8 +3,6 @@ pub = [dir_path] ../include/
 
 include $pub
 
-is_windows = ($cxx.target.class == 'windows')
-
 pub_hdrs = $($pub/ pub_hdrs)
 
 lib{zmq}: $pub/{$pub_hdrs}
@@ -36,8 +34,6 @@ impl_poptions += -DZMQ_USE_CV_IMPL_STL11
 impl_poptions += -DZMQ_HAVE_NOEXCEPT
 
 impl_poptions += "-DZMQ_CACHELINE_SIZE=$config.libzmq.cacheline_size"
-
-
 
 config_flags = \
     $config.libzmq.enable_intrinsics \
@@ -123,7 +119,7 @@ for i: $integer_sequence(0, $size($config_poptions))
     }
 }
 
-switch $pthread_setname_mode
+switch $config.libzmq.pthread_setname_mode
 {
     case 'setname_1'
     {
@@ -143,11 +139,11 @@ switch $pthread_setname_mode
     }
     default
     {
-        fail "invalid pthread_setname_mode $pthread_setname_mode"
+        fail "invalid pthread_setname_mode $config.libzmq.pthread_setname_mode"
     }
 }
 
-switch $poll_mode
+switch $config.libzmq.poll_mode
 {
     case 'kqueue'
     {
@@ -185,24 +181,24 @@ switch $poll_mode
     }
 }
 
-cxx.poptions += $impl_poptions
-{hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
+cc.poptions += $impl_poptions
+{hbmia obja}{*}: cc.poptions += -DZMQ_STATIC
 
 # Export options.
 lib{zmq}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cc.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
 }
 
-liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
+liba{zmq}: cc.export.poptions += -DZMQ_STATIC
 
 # create a separate target which exports the private poptions
 # these are required by the tests
 [rule_hint=cxx] lib{zmq_test}: lib{zmq}
 lib{zmq_test}:
 {
-  cxx.export.poptions = $impl_poptions
-  cxx.export.libs = lib{zmq}
+  cc.export.poptions = $impl_poptions
+  cc.export.libs = lib{zmq}
 }
 
 # For pre-releases use the complete version to make sure they cannot be used
