@@ -181,6 +181,11 @@ switch $config.libzmq.poll_mode
     }
 }
 
+if (!$is_windows)
+{
+    cc.libs += -pthread
+}
+
 cc.poptions += $impl_poptions
 {hbmia obja}{*}: cc.poptions += -DZMQ_STATIC
 
