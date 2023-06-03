@@ -74,7 +74,7 @@ tests = tests/cxx{test_ancillaries \
     test_tcp_accept_filter \
     test_mock_pub_sub}
 
-if ($config.target.class != 'windows')
+if ($cxx.target.class != 'windows')
 {
     tests += tests/cxx{test_proxy \
         test_proxy_hwm \
@@ -88,7 +88,7 @@ if ($config.target.class != 'windows')
         test_zmq_poll_fd}
 }
 
-if ($config.target.class == 'linux')
+if ($cxx.target.class == 'linux')
 {
     tests += tests/cxx{test_abstract_ipc}
 }

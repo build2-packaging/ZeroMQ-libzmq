@@ -27,7 +27,7 @@ config [bool] config.libzmq.enable_ws ?= true
 config [bool] config.libzmq.enable_radix_tree ?= false
 config [bool] config.libzmq.enable_gnutls ?= false
 config [bool] config.libzmq.enable_ipc ?= (!$is_windows)
-config [bool] config.libzmq.enable_tipc ?= true
+config [bool] config.libzmq.enable_tipc ?= (!$is_windows)
 config [bool] config.libzmq.enable_militant_assert ?= false
 
 # mode for polling, can be:
