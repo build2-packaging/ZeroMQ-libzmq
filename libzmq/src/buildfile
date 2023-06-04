@@ -183,27 +183,27 @@ switch $config.libzmq.poll_mode
 
 if (!$is_windows)
 {
-    cc.libs += -pthread
+    cxx.libs += -pthread
 }
 
-cc.poptions += $impl_poptions
-{hbmia obja}{*}: cc.poptions += -DZMQ_STATIC
+cxx.poptions += $impl_poptions
+{hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
 
 # Export options.
 lib{zmq}:
 {
-  cc.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
 }
 
-liba{zmq}: cc.export.poptions += -DZMQ_STATIC
+liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
 
 # create a separate target which exports the private poptions
 # these are required by the tests
 [rule_hint=cxx] lib{zmq_test}: lib{zmq}
 lib{zmq_test}:
 {
-  cc.export.poptions = $impl_poptions
-  cc.export.libs = lib{zmq}
+  cxx.export.poptions = $impl_poptions
+  cxx.export.libs = lib{zmq}
 }
 
 # For pre-releases use the complete version to make sure they cannot be used
