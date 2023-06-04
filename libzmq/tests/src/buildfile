@@ -1,6 +1,8 @@
 import libs = libzmq%lib{zmq_test}
 
-cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/"
+cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/" \
+                -DUNITY_USE_COMMAND_LINE_ARGS -DUNITY_EXCLUDE_FLOAT
+
 
 liba{testutil}: tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
 
