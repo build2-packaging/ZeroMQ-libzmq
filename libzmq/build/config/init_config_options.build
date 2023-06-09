@@ -1,4 +1,5 @@
 is_windows = ($cxx.target.class == 'windows')
+is_mingw = ($cxx.target.system = 'mingw32')
 is_linux = ($cxx.target.class == 'linux')
 is_macos = ($cxx.target.class == 'macos')
 
@@ -101,7 +102,7 @@ config [bool] config.libzmq.use_tcp_keepalive ?= (!$is_windows)
 
 config [bool] config.libzmq.use_pthread_set_affinity ?= (!$is_windows)
 config [bool] config.libzmq.use_accept4 ?= ((!$is_windows) && (!$is_macos))
-config [bool] config.libzmq.use_strnlen ?= (!$is_windows)
+config [bool] config.libzmq.use_strnlen ?= ((!$is_windows) || $is_mingw)
 config [bool] config.libzmq.use_strlcpy ?= ((!$is_windows) && (!$is_linux))
 
 # TODO check if we are on Windows 10 at least
