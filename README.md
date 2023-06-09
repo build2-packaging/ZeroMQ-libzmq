@@ -1,6 +1,6 @@
 # libzmq Build2 Package
 
-[![build2](https://github.com/build2-packaging/libzmq/actions/workflows/build2.yml/badge.svg)](https://github.com/build2-packaging/libzmq/actions/workflows/build2.yml)
+[![build2](https://github.com/build2-packaging/ZeroMQ-libzmq/actions/workflows/build2.yml/badge.svg)](https://github.com/build2-packaging/ZeroMQ-libzmq/actions/workflows/build2.yml)
 
 This project builds and defines the build2 package for the [libzmq](https://github.com/zeromq/libzmq) library.
 
