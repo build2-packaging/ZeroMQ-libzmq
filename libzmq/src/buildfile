@@ -121,6 +121,10 @@ for i: $integer_sequence(0, $size($config_poptions))
 
 switch $config.libzmq.pthread_setname_mode
 {
+    case 'none'
+    {
+        # for systems without pthread we add no poptions
+    }
     case 'setname_1'
     {
         impl_poptions += -DZMQ_HAVE_PTHREAD_SETNAME_1
@@ -137,6 +141,7 @@ switch $config.libzmq.pthread_setname_mode
     {
         impl_poptions += -DZMQ_HAVE_PTHREAD_SET_NAME
     }
+
     default
     {
         fail "invalid pthread_setname_mode $config.libzmq.pthread_setname_mode"

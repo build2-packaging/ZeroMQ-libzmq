@@ -11,7 +11,6 @@ src-url: https://github.com/zeromq/libzmq
 doc-url: http://api.zeromq.org/
 package-url: https://github.com/build2-packaging/libzmq
 package-email: packaging@build2.org ; Mailing list.
-build-file: make_config_defaults.build
 
 depends: * build2 >= 0.16.0-
 depends: * bpkg >= 0.16.0-
