@@ -95,7 +95,7 @@ jobs:
         build2-version: latest
         build2-windows-compiler: ${{matrix.config.compiler_type}}
     - name: Configure
-      run: bdep init -C ../FTXUI-cc @cc cc config.config.load=build-config/${{matrix.config.config_file}}
+      run: bdep init -C ../libzmq-cc @cc cc config.config.load=build-config/${{matrix.config.config_file}}
     - name: Build
       run: b -V
     - name: Test
