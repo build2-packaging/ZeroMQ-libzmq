@@ -14,7 +14,7 @@ lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
 lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
 lib{zmq}: src/{hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
 lib{zmq}: external/sha1/{h c}{*}: include = (!$config.libzmq.enable_gnutls)
-lib{zmq}: external/wepoll/{h c}{*}: include = ($is_windows && ($poll_mode == 'epoll'))
+lib{zmq}: external/wepoll/{h c}{*}: include = ($is_windows && ($config.libzmq.poll_mode == 'epoll'))
 
 # Build options.
 out_pfx_inc = [dir_path] $out_root/include/
