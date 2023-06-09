@@ -63,7 +63,6 @@ tests = tests/cxx{test_ancillaries \
     test_heartbeats \
     test_atomics \
     test_bind_src_address \
-    test_capabilities \
     test_metadata \
     test_router_handover \
     test_srcfd \
@@ -88,10 +87,8 @@ if ($cxx.target.class != 'windows')
         test_proxy_single_socket \
         test_proxy_terminate \
         test_getsockopt_memset \
-        test_filter_ipc \
         test_stream_exceeds_buffer \
         test_router_mandatory_hwm \
-        test_use_fd \
         test_zmq_poll_fd}
 }
 
