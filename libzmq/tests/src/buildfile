@@ -3,8 +3,13 @@ import libs = libzmq%lib{zmq_test}
 cxx.poptions += "-I$out_root/src/external/unity/" "-I$src_root/src/external/unity/" \
                 -DUNITY_USE_COMMAND_LINE_ARGS -DUNITY_EXCLUDE_FLOAT
 
-
-liba{testutil}: tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
+switch $cxx.target.class
+{
+	case 'windows'
+	{
+		cxx.libs += ws2_32.lib
+	}
+}
 
 tests = tests/cxx{test_ancillaries \
     test_system \
@@ -111,6 +116,6 @@ if ($cxx.target.class == 'linux')
 
 for test_src: $tests
 {
-    exe{$name($test_src)}: $test_src src/hxx{platform} liba{testutil} src/hxx{*} include/hxx{*} external/hxx{**} $libs
+    exe{$name($test_src)}: $test_src src/hxx{platform} src/hxx{*} include/hxx{*} external/hxx{**} tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
     ./: exe{$name($test_src)}
 }
