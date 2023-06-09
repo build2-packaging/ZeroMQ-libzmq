@@ -190,7 +190,7 @@ switch $cxx.target.class
 {
     case 'windows'
     {
-        if ($cxx.target.system = 'mingw32')
+        if ($cxx.target.system == 'mingw32')
         {
             cxx.libs += -lws2_32 -lrpcrt4 -liphlpapi -ladvapi32
         }
