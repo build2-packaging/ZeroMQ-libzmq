@@ -186,9 +186,20 @@ switch $config.libzmq.poll_mode
     }
 }
 
-if (!$is_windows)
+switch $cxx.target.class
 {
-    cxx.libs += -pthread
+    case 'windows'
+    {
+        cxx.libs += ws2_32.lib rpcrt4.lib iphlpapi.lib
+    }
+    case 'macos'
+    {
+        cxx.libs += -pthread
+    }
+    default
+    {
+        cxx.libs += -pthread -lrt
+    }
 }
 
 cxx.poptions += $impl_poptions
