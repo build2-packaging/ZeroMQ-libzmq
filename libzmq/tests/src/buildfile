@@ -97,20 +97,6 @@ if ($cxx.target.class == 'linux')
     tests += tests/cxx{test_abstract_ipc}
 }
 
-#if $config.libzmq.enable_tipc
-#{
-#    tests += tests/cxx{*_tipc}
-#}
-
-#if $config.libzmq.enable_ws
-#{
-#    tests += tests/cxx{test_ws_transport}
-#    if $config.libzmq.enable_gnutls
-#    {
-#        tests += tests/cxx{test_wss_transport}
-#    }
-#}
-
 for test_src: $tests
 {
     exe{$name($test_src)}: $test_src src/hxx{platform} src/hxx{*} include/hxx{*} external/hxx{**} tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
