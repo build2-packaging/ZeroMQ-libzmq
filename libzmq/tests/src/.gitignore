@@ -1,1 +1,5 @@
 test_*
+
+# Testscript output directories.
+#
+test-*

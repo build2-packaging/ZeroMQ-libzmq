@@ -1,0 +1,4 @@
+# Redirect stdout to stderr and let stderr through. Cleanup anything the
+# test might create.
+#
+$* 1>&2 2>| &***

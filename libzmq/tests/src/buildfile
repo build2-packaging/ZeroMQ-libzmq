@@ -99,6 +99,12 @@ if ($cxx.target.class == 'linux')
 
 for test_src: $tests
 {
-    exe{$name($test_src)}: $test_src src/hxx{platform} src/hxx{*} include/hxx{*} external/hxx{**} tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs
+    # Note that we use testscript to "sanitize" the test environment.
+    # Specifically, each test get its own temporary CWD (some tests
+    # create filesystem entries in CWD). We also redirect stdout to
+    # stderr (the testing framework used appears to write diagnostics
+    # to stdout).
+    #
+    exe{$name($test_src)}: $test_src src/hxx{platform} src/hxx{*} include/hxx{*} external/hxx{**} tests/{hxx cxx}{testutil*} external/unity/{h c}{*} $libs testscript
     ./: exe{$name($test_src)}
 }
