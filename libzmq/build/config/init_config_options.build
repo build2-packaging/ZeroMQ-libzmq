@@ -1,7 +1,7 @@
-is_windows = ($cxx.target.class == 'windows')
-is_mingw = ($cxx.target.system == 'mingw32')
-is_linux = ($cxx.target.class == 'linux')
-is_macos = ($cxx.target.class == 'macos')
+is_windows = ($cc.target.class == 'windows')
+is_mingw = ($cc.target.system == 'mingw32')
+is_linux = ($cc.target.class == 'linux')
+is_macos = ($cc.target.class == 'macos')
 
 config [bool] config.libzmq.enable_intrinsics ?= false
 config [bool] config.libzmq.enable_ws ?= true
@@ -15,7 +15,7 @@ config [bool] config.libzmq.enable_drafts ?= false
 
 # determine the mode based on the target platform
 default_poll_mode =
-switch $cxx.target.class
+switch $cc.target.class
 {
     case 'windows'
     {
@@ -41,7 +41,7 @@ config [string] config.libzmq.poll_mode ?= $default_poll_mode
 
 # determine the mode based on the target platform
 default_pthread_setname_mode =
-switch $cxx.target.class
+switch $cc.target.class
 {
     case 'macos'
     {

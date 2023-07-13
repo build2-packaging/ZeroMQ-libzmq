@@ -199,11 +199,11 @@ switch $config.libzmq.poll_mode
     }
 }
 
-switch $cxx.target.class
+switch $cc.target.class
 {
     case 'windows'
     {
-        if ($cxx.target.system == 'mingw32')
+        if ($cc.target.system == 'mingw32')
         {
             cc.libs += -lws2_32 -lrpcrt4 -liphlpapi -ladvapi32
         }
