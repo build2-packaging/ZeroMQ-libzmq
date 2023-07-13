@@ -10,68 +10,60 @@ config [bool] config.libzmq.enable_gnutls ?= false
 config [bool] config.libzmq.enable_ipc ?= (!$is_windows)
 config [bool] config.libzmq.enable_tipc ?= $is_linux
 config [bool] config.libzmq.enable_militant_assert ?= false
+config [bool] config.libzmq.enable_curve ?= true
+config [bool] config.libzmq.enable_drafts ?= false
+
+# determine the mode based on the target platform
+default_poll_mode =
+switch $cxx.target.class
+{
+    case 'windows'
+    {
+        default_poll_mode = 'epoll'
+    }
+    case 'macos'
+    {
+        default_poll_mode = 'kqueue'
+    }
+    case 'linux'
+    {
+        default_poll_mode = 'select'
+    }
+    default
+    {
+        default_poll_mode = 'select'
+    }
+}
 
 # mode for polling, can be:
 # kqueue, epoll, devpoll, pollset, poll, select
-config [string] config.libzmq.poll_mode
+config [string] config.libzmq.poll_mode ?= $default_poll_mode
 
-if! $defined(config.libzmq.poll_mode)
+# determine the mode based on the target platform
+default_pthread_setname_mode =
+switch $cxx.target.class
 {
-    poll_mode =
-    # determine the mode based on the target platform
-    switch $cxx.target.class
+    case 'macos'
     {
-        case 'windows'
-        {
-            poll_mode = 'epoll'
-        }
-        case 'macos'
-        {
-            poll_mode = 'kqueue'
-        }
-        case 'linux'
-        {
-            poll_mode = 'select'
-        }
-        default
-        {
-            poll_mode = 'select'
-        }
+        default_pthread_setname_mode = 'setname_1'
     }
-
-    config config.libzmq.poll_mode ?= $poll_mode
+    case 'linux'
+    {
+        default_pthread_setname_mode = 'setname_2'
+    }
+    case 'windows'
+    {
+        default_pthread_setname_mode = 'none'
+    }
+    default
+    {
+        default_pthread_setname_mode = 'setname_1'
+    }
 }
 
 # mode for calling pthread_setname variants, values can be:
 # none, setname_1, setname_2, setname_3, set_name
-config [string] config.libzmq.pthread_setname_mode
-
-if! $defined(config.libzmq.pthread_setname_mode)
-{
-    pthread_setname_mode =
-    # determine the mode based on the target platform
-    switch $cxx.target.class
-    {
-        case 'macos'
-        {
-            pthread_setname_mode = 'setname_1'
-        }
-        case 'linux'
-        {
-            pthread_setname_mode = 'setname_2'
-        }
-        case 'windows'
-        {
-            pthread_setname_mode = 'none'
-        }
-        default
-        {
-            pthread_setname_mode = 'setname_1'
-        }
-    }
-
-    config config.libzmq.pthread_setname_mode ?= $pthread_setname_mode
-}
+config [string] config.libzmq.pthread_setname_mode ?= $default_pthread_setname_mode
 
 # forces to use mutexes instead of atomic variables (in case no atomics are available)
 config [bool] config.libzmq.force_mutexes ?= false

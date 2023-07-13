@@ -5,11 +5,16 @@ include $pub
 
 pub_hdrs = $($pub/ pub_hdrs)
 
+# currently using libsodium is not supported, still replicate the behavior of upstream
+use_libsodium = false
+use_tweetnacl = ($config.libzmq.enable_curve && (!$use_libsodium))
+
 lib{zmq}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
 lib{zmq}: hxx{platform}
-lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*.h}
+lib{zmq}: src/{hxx cxx}{* -ws_* -wss_* -tipc_*} src/hxx{*} src/h{zmq_draft}
+lib{zmq}: src/{h c}{tweetnacl}: include = $use_tweetnacl
 lib{zmq}: src/{hxx cxx}{ws_*}: include = $config.libzmq.enable_ws
 lib{zmq}: src/{hxx cxx}{wss_*}: include = ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls)
 lib{zmq}: src/{hxx cxx}{tipc_*}: include = $config.libzmq.enable_tipc
@@ -70,7 +75,11 @@ config_flags = \
     $config.libzmq.enable_ws \
     ($config.libzmq.enable_ws && $config.libzmq.enable_gnutls) \
     $is_windows \
-    ($is_windows && $config.libzmq.use_windows_uwp)
+    ($is_windows && $config.libzmq.use_windows_uwp) \
+    $config.libzmq.enable_curve \
+    $use_tweetnacl \
+    $use_libsodium \
+    $config.libzmq.enable_drafts
 
 config_poptions = \
     ZMQ_HAVE_ATOMIC_INTRINSICS \
@@ -107,7 +116,11 @@ config_poptions = \
     ZMQ_HAVE_WS \
     ZMQ_HAVE_WSS \
     ZMQ_HAVE_WINDOWS \
-    ZMQ_HAVE_WINDOWS_UWP
+    ZMQ_HAVE_WINDOWS_UWP \
+    ZMQ_HAVE_CURVE \
+    ZMQ_USE_TWEETNACL \
+    ZMQ_USE_LIBSODIUM \
+    ZMQ_BUILD_DRAFT_API
 
 for i: $integer_sequence(0, $size($config_poptions))
 {
@@ -192,41 +205,41 @@ switch $cxx.target.class
     {
         if ($cxx.target.system == 'mingw32')
         {
-            cxx.libs += -lws2_32 -lrpcrt4 -liphlpapi -ladvapi32
+            cc.libs += -lws2_32 -lrpcrt4 -liphlpapi -ladvapi32
         }
         else
         {
-            cxx.libs += ws2_32.lib rpcrt4.lib iphlpapi.lib advapi32.lib
+            cc.libs += ws2_32.lib rpcrt4.lib iphlpapi.lib advapi32.lib
         }
     }
     case 'macos'
     {
-        cxx.libs += -pthread
+        cc.libs += -pthread
     }
     default
     {
-        cxx.libs += -pthread -lrt
+        cc.libs += -pthread -lrt
     }
 }
 
-cxx.poptions += $impl_poptions
-{hbmia obja}{*}: cxx.poptions += -DZMQ_STATIC
+cc.poptions += $impl_poptions
+{hbmia obja}{*}: cc.poptions += -DZMQ_STATIC
 
 # Export options.
 lib{zmq}:
 {
-  cxx.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
+  cc.export.poptions = "-I$out_pfx_inc" "-I$src_pfx_inc"
 }
 
-liba{zmq}: cxx.export.poptions += -DZMQ_STATIC
+liba{zmq}: cc.export.poptions += -DZMQ_STATIC
 
 # create a separate target which exports the private poptions
 # these are required by the tests
 [rule_hint=cxx] lib{zmq_test}: lib{zmq}
 lib{zmq_test}:
 {
-  cxx.export.poptions = $impl_poptions
-  cxx.export.libs = lib{zmq}
+  cc.export.poptions = $impl_poptions
+  cc.export.libs = lib{zmq}
 }
 
 # For pre-releases use the complete version to make sure they cannot be used
