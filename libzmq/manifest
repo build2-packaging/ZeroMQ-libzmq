@@ -1,6 +1,6 @@
 : 1
 name: libzmq
-version: 4.3.4+2
+version: 4.3.4+3
 language: c
 language: c++=impl
 project: ZeroMQ
